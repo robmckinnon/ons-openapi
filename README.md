@@ -7,39 +7,7 @@ This gem was partially written at [Accountability Hack 2014](https://twitter.com
 
 Please provide feedback via [GitHub issues](https://github.com/robmckinnon/ons-openapi/issues).
 
-# Installation
-
-```
-gem install ons_openapi
-```
-
-then in Ruby code
-
-```
-require 'ons_openapi'
-```
-
-or if using bundler (as with Rails), add to the Gemfile
-
-```
-gem 'ons_openapi'
-```
-
-You must have an ExecJS supported runtime when running this gem. If you are using Mac OS X or Windows, you already have a JavaScript runtime installed in your operating system. Check [ExecJS documentation](https://github.com/sstephenson/execjs#readme) to know all supported JavaScript runtimes.
-
-The gem includes code from the [JSON-stat Javascript Toolkit](https://github.com/badosa/JSON-stat) to parse JSON-stat formatted results from the ONS OpenAPI. ExecJS is used to run JSON-stat JavaScript code from within Ruby.
-
-# Register for API key
-
-The ONS OpenAPI requires you [register for an API key](https://www.ons.gov.uk/ons/apiservice/web/apiservice/home#reg-main-content).
-
-When using the gem, set an environment variable named `ONS_APIKEY` with your API key value.
-
-```
-$ ONS_APIKEY=<your_ons_openapi_key>
-```
-
-# Getting started
+# Example usage
 
 Running in irb:
 
@@ -92,6 +60,37 @@ Running in irb:
     #
     # data_for('E05004981 Woodlands') or data_for('E05004981') see http://statistics.data.gov.uk/doc/statistical-geography/E05004981
 
+# Installation
+
+```
+gem install ons_openapi
+```
+
+then in Ruby code
+
+```
+require 'ons_openapi'
+```
+
+or if using bundler (as with Rails), add to the Gemfile
+
+```
+gem 'ons_openapi'
+```
+
+You must have an ExecJS supported runtime when running this gem. If you are using Mac OS X or Windows, you already have a JavaScript runtime installed in your operating system. Check [ExecJS documentation](https://github.com/sstephenson/execjs#readme) to know all supported JavaScript runtimes.
+
+The gem includes code from the [JSON-stat Javascript Toolkit](https://github.com/badosa/JSON-stat) to parse JSON-stat formatted results from the ONS OpenAPI. ExecJS is used to run JSON-stat JavaScript code from within Ruby.
+
+# Register for API key
+
+The ONS OpenAPI requires you [register for an API key](https://www.ons.gov.uk/ons/apiservice/web/apiservice/home#reg-main-content).
+
+When using the gem, set an environment variable named `ONS_APIKEY` with your API key value.
+
+```
+$ ONS_APIKEY=<your_ons_openapi_key>
+```
 
 # Contexts
 
