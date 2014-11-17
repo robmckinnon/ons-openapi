@@ -1,5 +1,5 @@
-ons-openapi
-===========
+ons_openapi gem
+===============
 
 Ruby wrapper around the [ONS OpenAPI](https://www.ons.gov.uk/ons/apiservice/web/apiservice/home) - the UK Office of National Statistics's data API. The intention is to make it easy to quickly retrieve data. It may not expose the full functionality of the ONS OpenAPI.
 
