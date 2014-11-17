@@ -43,7 +43,7 @@ $ ONS_APIKEY=<your_ons_openapi_key>
 
 Running in irb:
 
-    $ irb
+    $ ONS_APIKEY=<your_ons_openapi_key> irb
 
     require 'ons_openapi'
 
