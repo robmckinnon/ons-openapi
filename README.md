@@ -138,6 +138,7 @@ Retrieve a collection using `collection()`. Pass in the collection code, collect
 
 Each collection can be filtered with different geographical hierarchies.
 
+    census = OnsOpenApi.context('Census')
     religion = census.collection('Religion')
 
     religion.geography_codes
@@ -151,6 +152,8 @@ Each collection can be filtered with different geographical hierarchies.
 
 Use `geographies()` to get a hash of geography hierarchies. To get a list of geography items for a hierarchy, say '2011PCONH', do:
 
+    census = OnsOpenApi.context('Census')
+    religion = census.collection('Religion')
     constituencies = religion.geographies['2011PCONH']
 
     constituencies.map(&:label)
@@ -202,8 +205,14 @@ To see `area_types` in the hierarchy:
 
 Use `data_for()` to retrieve data for a geography that matches given label_or_code.
 
+    census = OnsOpenApi.context('Census')
+    religion = census.collection('Religion')
+
     religion.data_for('England')
     religion.data_for('Islington S')
     religion.data_for('E05002040')
 
+# Feedback
+
+Please provide feedback via [GitHub issues](https://github.com/robmckinnon/ons-openapi/issues).
 
