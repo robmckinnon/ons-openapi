@@ -14,7 +14,9 @@ class OnsOpenApi::Collection
   def data_for label_or_code
     if geographies = geography(label_or_code)
       if geographies.size > 1
-        cmds = geographies.map {|g| "data_for('#{g.title}') or data_for('#{g.item_code}') see http://statistics.data.gov.uk/doc/statistical-geography/#{g.item_code}"}
+        cmds = geographies.map do |g|
+          "data_for('#{g.title}') or data_for('#{g.item_code}') see #{g.geography_code} http://statistics.data.gov.uk/doc/statistical-geography/#{g.item_code}"}
+        end
         raise "more than one match, try one of:\n\n  #{cmds.join("  \n\n  ") }\n\n"
       else
         geo = geographies.first
