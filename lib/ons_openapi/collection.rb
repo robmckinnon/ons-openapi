@@ -10,17 +10,76 @@ class OnsOpenApi::Collection
 
   # Returns data as array of arrays, for a geography that matches label_or_code.
   # e.g. data_for('England'), data_for('Islington S'), data_for('E05002040')
+  # Optionally request calculate_percentages.
+  # e.g. data_for('England', calculate_percentages: true)
   # Raises exception if no match or more than one match.
-  def data_for label_or_code
+  def data_for label_or_code, options={}
     if geographies = geography(label_or_code)
       if geographies.size > 1
         cmds = geographies.map do |g|
-          "data_for('#{g.title}') or data_for('#{g.item_code}') see #{g.geography_code} http://statistics.data.gov.uk/doc/statistical-geography/#{g.item_code}"}
+          "data_for('#{g.title}') or data_for('#{g.item_code}') see #{g.geography_code} http://statistics.data.gov.uk/doc/statistical-geography/#{g.item_code}"
         end
         raise "more than one match, try one of:\n\n  #{cmds.join("  \n\n  ") }\n\n"
       else
         geo = geographies.first
-        data geo.item_code, geo.geography_code
+        calculate_percentages = options[:calculate_percentages]
+        result = data geo.item_code, geo.geography_code
+        add_percentages! result if calculate_percentages
+        result
+      end
+    end
+  end
+
+  # Returns data as array of arrays, for a geography that matches label_or_code.
+  # e.g. compare_data('England', 'W92000004 Wales'),
+  #      compare_data('Islington S', 'Islington N'),
+  #      compare_data('E05002040', 'Bunhill')
+  # Raises exception if no match or more than one match for either input.
+  def compare_data label_or_code, another_label_or_code
+    data = data_for label_or_code, calculate_percentages: true
+    other_data = data_for another_label_or_code, calculate_percentages: true
+    header = []
+    comparison = []
+    data.each_with_index do |row, index|
+      if index == 0
+        header = [ row[0], "vs. #{row[0]}", row[1], 'Difference explained', 'Percentage difference' ]
+      else
+        label = row[1]
+        percentage = row.last
+        other_row = find_row(other_data, label)
+        other_percentage = other_row.last
+        difference = (percentage - other_percentage).round(1)
+        place = row[0]
+        other_place = other_row[0]
+        description = if difference > 0
+                        "more in #{place}"
+                      elsif difference < 0
+                        "more in #{other_place}"
+                      else
+                        "-"
+                      end
+
+        comparison << [ place, other_place, row[1], description, difference ] unless difference == 0
+      end
+    end
+    comparison.sort_by!{|x| x.last.abs}.reverse!
+    comparison.insert(0, header)
+    comparison
+  end
+
+  # Add percentage column to data if 'All categories' value available.
+  # 'All categories' value is used as denominator for percentage.
+  def add_percentages! data
+    if value_index = data.first.index('Value')
+      if all_categories = find_row(data, /All categories/)
+        denominator = Float all_categories[value_index]
+        data.each_with_index do |row, index|
+          if index == 0
+            row << 'Percentage'
+          else
+            row << ( 100 * row[value_index] / denominator ).round(2)
+          end
+        end
       end
     end
   end
@@ -47,8 +106,11 @@ class OnsOpenApi::Collection
       table = js_context.eval( %Q| JSONstat( JSON.parse(' #{raw_json_stat} ') ).Dataset(0)#{stat} | )
     rescue Encoding::UndefinedConversionError => e
       if e.to_s[/ASCII-8BIT to UTF-8/]
-        raw_json_stat = raw_json_stat.force_encoding('ASCII-8BIT').encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => '?')
-        table = js_context.eval( %Q| JSONstat( JSON.parse(' #{raw_json_stat} ') ).Dataset(0)#{stat} | )
+        json_stat = raw_json_stat.
+          force_encoding('ASCII-8BIT').
+          encode('UTF-8', invalid: :replace, undef: :replace, replace: '?')
+
+        table = js_context.eval( %Q| JSONstat( JSON.parse(' #{json_stat} ') ).Dataset(0)#{stat} | )
       else
         raise "#{e.to_s}: #{raw_json_stat}"
       end
@@ -148,6 +210,10 @@ class OnsOpenApi::Collection
       @js_context = ExecJS.compile(source)
     end
     @js_context
+  end
+
+  def find_row data, label
+    data.detect {|x| x[1][label]}
   end
 
 end
