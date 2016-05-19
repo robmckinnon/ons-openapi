@@ -29,7 +29,7 @@ require 'open-uri'
 # See README for usage documentation.
 module OnsOpenApi
 
-  VERSION = "0.1.1" unless defined? OnsOpenApi::VERSION
+  VERSION = "0.1.2" unless defined? OnsOpenApi::VERSION
 
   class << self
 
