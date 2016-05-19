@@ -64,6 +64,9 @@ class OnsOpenApi::Context
   #
   # Codes include:
   # +2011WARDH+ - 2011 Administrative Hierarchy
+  # +2012WARDH+ - 2012 Administrative Hierarchy
+  # +2013WARDH+ - 2013 Administrative Hierarchy
+  # +2014WARDH+ - 2014 Administrative Hierarchy
   # +2011STATH+ - 2011 Statistical Geography Hierarchy
   # +2011PCONH+ - 2011 Westminster Parliamentary Constituency Hierarchy
   # +2011HTWARDH+ - 2011 Census Merged Ward Hierarchy
@@ -74,9 +77,8 @@ class OnsOpenApi::Context
     unless @geographies[code]
       params = { context: @name }
 
-      if code == '2011STATH'
-        params.merge!({ levels: '0,1,2,3,4,5' }) # restrict levels to reduce delay
-      end
+      # restrict levels - most hierarchies seem to require levels param be set
+      params.merge!({ levels: '0,1,2,3,4,5' })
 
       result = OnsOpenApi::get "hierarchies/hierarchy/#{code}", params
       @geographies[code] = result.geography_list.items.items
