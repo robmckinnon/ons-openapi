@@ -1,20 +1,20 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (4.1.7)
-      i18n (~> 0.6, >= 0.6.9)
+    activesupport (4.2.6)
+      i18n (~> 0.7)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
-      thread_safe (~> 0.1)
+      thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    execjs (2.2.2)
-    i18n (0.6.11)
-    json (1.8.1)
-    minitest (5.4.2)
-    morph (0.3.7)
+    execjs (2.6.0)
+    i18n (0.7.0)
+    json (1.8.3)
+    minitest (5.9.0)
+    morph (0.4.1)
       activesupport (>= 2.0.2)
-    rack (1.5.2)
-    thread_safe (0.3.4)
+    rack (1.6.4)
+    thread_safe (0.3.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
 
@@ -26,3 +26,6 @@ DEPENDENCIES
   json
   morph
   rack
+
+BUNDLED WITH
+   1.12.3

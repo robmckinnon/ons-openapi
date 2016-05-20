@@ -11,6 +11,7 @@ class OnsOpenApi::Collection
   # Returns data as array of arrays, for a geography that matches label_or_code.
   # e.g. data_for('England'), data_for('Islington S'), data_for('E05002040')
   # Raises exception if no match or more than one match.
+  #
   def data_for label_or_code
     if geographies = geography(label_or_code)
       if geographies.size > 1
@@ -65,12 +66,14 @@ class OnsOpenApi::Collection
   # collection.
   #
   # e.g.
-  # 2011WARDH - 2011 Administrative Hierarchy
   # 2011STATH - 2011 Statistical Geography Hierarchy
-  # 2011PCONH - 2011 Westminster Parliamentary Constituency Hierarchy
-  # 2011HTWARDH - 2011 Census Merged Ward Hierarchy
-  # 2011CMLADH - 2011 Census merged local authority district hierarchy
+  # 2014WARDH - 2014 Administrative Hierarchy
+  # 2011WARDH - 2011 Administrative Hierarchy
   # 2011PARISH - 2011 Parish Hierarchy
+  # 2011PCONH - 2011 Westminster Parliamentary Constituency Hierarchy
+  # 2011NAWH - 2011 National Assembley for Wales Electoral Hierarchy
+  # 2013HEALTHH - 2013 Health Area Hierarchy
+  # 2011BUAH - 2011 Built-up area hierarchy
   #
   def geography_codes
     gh ||= geographical_hierarchies

@@ -59,42 +59,56 @@ class OnsOpenApi::Context
 
   # Returns geography objects for given geography code.
   #
-  # Parameter +code+ defaults to +'2011WARDH'+ for the 2011 Administrative
+  # Parameter +code+ defaults to +'2014WARDH'+ for the 2014 Administrative
   # Hierarchy, if no +code+ supplied.
+  #
+  # Option +levels+ defaults to +'0,1,2,3,4,5,6,7'+. You can specify levels,
+  # e.g. geographies('2011WARDH', levels: '0,1,2,3,4,5')
   #
   # Codes include:
   # +2011WARDH+ - 2011 Administrative Hierarchy
+  # +2012WARDH+ - 2012 Administrative Hierarchy
+  # +2013WARDH+ - 2013 Administrative Hierarchy
+  # +2014WARDH+ - 2014 Administrative Hierarchy
   # +2011STATH+ - 2011 Statistical Geography Hierarchy
   # +2011PCONH+ - 2011 Westminster Parliamentary Constituency Hierarchy
   # +2011HTWARDH+ - 2011 Census Merged Ward Hierarchy
   # +2011CMLADH+ - 2011 Census merged local authority district hierarchy
   # +2011PARISH+ - 2011 Parish Hierarchy
-  def geographies code='2011WARDH'
+  def geographies code='2011WARDH', option={ levels: '0,1,2,3,4,5,6,7' }
     @geographies ||= {}
-    unless @geographies[code]
-      params = { context: @name }
+    levels = if code == '2011STATH' && option[:levels][/6|7|8|9/] # restrict levels to reduce delay
+               '0,1,2,3,4,5'
+             else # hierarchies require levels param be set
+               option[:levels]
+             end
 
-      if code == '2011STATH'
-        params.merge!({ levels: '0,1,2,3,4,5' }) # restrict levels to reduce delay
-      end
-
+    key = [code, levels].join('-')
+    unless @geographies[key]
+      params = { context: @name, levels: levels }
       result = OnsOpenApi::get "hierarchies/hierarchy/#{code}", params
-      @geographies[code] = result.geography_list.items.items
+      @geographies[key] = result.geography_list.items.items
     end
-    @geographies[code].each {|g| g.geography_code = code }
-    @geographies[code]
+    @geographies[key].each {|g| g.geography_code = code }
+    @geographies[key]
   end
 
-  # Returns geography objects from the 2011 Administrative Hierarchy
-  # with area type 'Electoral Division'
-  def electoral_divisions
-    geographies('2011WARDH').select {|z| z.area_type.codename['Electoral Division']}
+  # Returns geography objects from the given Administrative Hierarchy
+  # with area type 'Electoral Division'.
+  #
+  # Parameter +code+ defaults to +'2014WARDH'+ for the 2014 Administrative
+  # Hierarchy, if no +code+ supplied.
+  def electoral_divisions code='2014WARDH'
+    geographies(code).select {|z| z.area_type.codename['Electoral Division']}
   end
 
-  # Returns geography objects from the 2011 Administrative Hierarchy
+  # Returns geography objects from the given Administrative Hierarchy
   # with area type 'Electoral Ward/Division'
-  def electoral_wards
-    geographies('2011WARDH').select {|z| z.area_type.codename['Electoral Ward/Division']}
+  #
+  # Parameter +code+ defaults to +'2014WARDH'+ for the 2014 Administrative
+  # Hierarchy, if no +code+ supplied.
+  def electoral_wards code='2014WARDH'
+    geographies(code).select {|z| z.area_type.codename['Electoral Ward/Division']}
   end
 
   private
