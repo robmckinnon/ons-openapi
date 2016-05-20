@@ -62,4 +62,3 @@ require File.dirname(__FILE__) + '/ons_openapi/dimension'
 require File.dirname(__FILE__) + '/ons_openapi/value'
 require File.dirname(__FILE__) + '/ons_openapi/geographical_hierarchy'
 require File.dirname(__FILE__) + '/ons_openapi/item'
-
